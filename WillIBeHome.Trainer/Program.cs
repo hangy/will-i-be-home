@@ -21,6 +21,7 @@
         {
             var configuration = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
+                    .AddEnvironmentVariables()
                     .AddUserSecrets(typeof(Program).Assembly)
                     .Build();
 
