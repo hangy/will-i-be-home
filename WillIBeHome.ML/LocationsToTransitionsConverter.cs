@@ -49,14 +49,14 @@
             return result;
         }
 
-        private static IEnumerable<Transition> ConvertSequenceToTransitions(IEnumerable<Location> sequenceItemsInRange, Location? homeLocation = default)
+        private static IEnumerable<Transition> ConvertSequenceToTransitions(IEnumerable<Location> locationSequence, Location? homeLocation = default)
         {
             var result = new List<Transition>();
 
             var willBeHome = homeLocation != null;
 
             Location? lastLocation = default;
-            foreach (var location in sequenceItemsInRange)
+            foreach (var location in locationSequence)
             {
                 if (lastLocation != null)
                 {
@@ -70,9 +70,17 @@
             {
                 result.Add(new Transition(lastLocation, homeLocation, willBeHome));
             }
-            else if (homeLocation != null)
+            else
             {
-                result.Add(new Transition(homeLocation, homeLocation, willBeHome));
+                if (homeLocation != null)
+                {
+                    result.Add(new Transition(homeLocation, homeLocation, willBeHome));
+                }
+
+                if (lastLocation != null)
+                {
+                    result.Add(new Transition(lastLocation, lastLocation, willBeHome));
+                }
             }
 
             return result;
