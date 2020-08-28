@@ -20,7 +20,7 @@
             const string uri = "api/0/list";
             using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetUsersResult>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
@@ -29,7 +29,7 @@
             var uri = $"api/0/list?user={HttpUtility.UrlEncode(user)}";
             using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetDevicesResult>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
@@ -49,7 +49,7 @@
             var uri = uriBuilder.ToString();
             using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetLocationsResult>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
