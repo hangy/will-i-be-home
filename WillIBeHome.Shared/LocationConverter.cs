@@ -1,8 +1,8 @@
-﻿namespace WillIBeHome.Shared
-{
-    using System;
-    using System.Linq;
+﻿using System;
+using System.Linq;
 
+namespace WillIBeHome.Shared
+{
     public static class LocationConverter
     {
         public static ML.Location Convert(string user, string device, Owntracks.Location source)
@@ -12,8 +12,8 @@
                 throw new ArgumentNullException(nameof(source));
             }
 
-            var geohash = source.Geohash ?? string.Empty;
-            var isHome = source.InRegions.Contains("Home");
+            string? geohash = source.Geohash ?? string.Empty;
+            bool isHome = source.InRegions.Contains("Home");
 
             DateTimeOffset date;
             if (source.UnixEpochTimestamp.HasValue)

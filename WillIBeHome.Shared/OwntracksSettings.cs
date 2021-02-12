@@ -1,7 +1,7 @@
-﻿namespace WillIBeHome.Shared
-{
-    using System;
+﻿using System;
 
+namespace WillIBeHome.Shared
+{
     public class OwntracksSettings
     {
         public Uri? Uri { get; set; }

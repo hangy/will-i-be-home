@@ -1,16 +1,16 @@
-﻿namespace WillIBeHome.ML
-{
-    using System;
+﻿using System;
 
+namespace WillIBeHome.ML
+{
     public class Location
     {
         public Location(string user, string device, string geohash, DateTimeOffset date, bool isHome)
         {
-            this.User = user;
-            this.Device = device;
-            this.Geohash = geohash;
-            this.Date = date;
-            this.IsHome = isHome;
+            User = user;
+            Device = device;
+            Geohash = geohash;
+            Date = date;
+            IsHome = isHome;
         }
 
         public string User { get; }

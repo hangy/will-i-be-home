@@ -1,20 +1,20 @@
-﻿namespace WillIBeHome.Trainer
-{
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.ML;
-    using Microsoft.ML.Data;
-    using Microsoft.ML.Transforms;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using WillIBeHome.ML;
-    using WillIBeHome.Owntracks;
-    using WillIBeHome.Shared;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Transforms;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using WillIBeHome.ML;
+using WillIBeHome.Owntracks;
+using WillIBeHome.Shared;
 
+namespace WillIBeHome.Trainer
+{
     internal static class Program
     {
         internal static async Task Main(string[] args)
@@ -24,21 +24,21 @@
                 throw new ArgumentNullException(nameof(args));
             }
 
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot? configuration = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .AddEnvironmentVariables()
                     .AddUserSecrets(typeof(Program).Assembly)
                     .Build();
 
-            var owntracksSettings = configuration.GetSection("Owntracks").Get<OwntracksSettings>();
-            var locations = await QueryDataAsync(owntracksSettings).ConfigureAwait(false);
+            OwntracksSettings? owntracksSettings = configuration.GetSection("Owntracks").Get<OwntracksSettings>();
+            IEnumerable<ML.Location>? locations = await QueryDataAsync(owntracksSettings).ConfigureAwait(false);
 
             var mlContext = new MLContext(seed: 1);
 
-            var dataView = mlContext.Data.LoadFromEnumerable(LocationsToTransitionsConverter.Convert(locations));
-            var trainTestData = mlContext.Data.TrainTestSplit(dataView);
+            IDataView? dataView = mlContext.Data.LoadFromEnumerable(LocationsToTransitionsConverter.Convert(locations));
+            DataOperationsCatalog.TrainTestData trainTestData = mlContext.Data.TrainTestSplit(dataView);
 
-            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new[]
+            EstimatorChain<Microsoft.ML.Calibrators.CalibratorTransformer<Microsoft.ML.Calibrators.PlattCalibrator>>? pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new[]
             {
                 new InputOutputColumnPair(nameof(Transition.User), nameof(Transition.User)),
                 new InputOutputColumnPair(nameof(Transition.Device), nameof(Transition.Device)),
@@ -57,18 +57,18 @@
             .Append(mlContext.BinaryClassification.Calibrators.Platt());
 
             Console.WriteLine("Training model...");
-            var model = pipeline.Fit(trainTestData.TrainSet);
+            TransformerChain<Microsoft.ML.Calibrators.CalibratorTransformer<Microsoft.ML.Calibrators.PlattCalibrator>>? model = pipeline.Fit(trainTestData.TrainSet);
 
             Console.WriteLine("Predicting...");
 
             // Now that the model is trained, we want to test it's prediction results, which is done by using a test dataset
-            var predictions = model.Transform(trainTestData.TestSet);
+            IDataView? predictions = model.Transform(trainTestData.TestSet);
 
             // Now that we have the predictions, calculate the metrics of those predictions and output the results.
-            var metrics = mlContext.BinaryClassification.Evaluate(predictions);
+            CalibratedBinaryClassificationMetrics? metrics = mlContext.BinaryClassification.Evaluate(predictions);
             PrintBinaryClassificationMetrics(metrics);
 
-            var mlSettings = configuration.GetSection("ML").Get<MLSettings>();
+            MLSettings? mlSettings = configuration.GetSection("ML").Get<MLSettings>();
             mlContext.Model.Save(model, dataView.Schema, mlSettings.ModelPath);
         }
 
@@ -81,30 +81,30 @@
             };
 
             var apiClient = new OwntracksApiClient(httpClient);
-            var users = await apiClient.GetUsersAsync(cancellationToken).ConfigureAwait(false);
+            GetUsersResult? users = await apiClient.GetUsersAsync(cancellationToken).ConfigureAwait(false);
             var result = new List<ML.Location>();
             if (users == null)
             {
                 return result;
             }
 
-            foreach (var user in users.Results)
+            foreach (string? user in users.Results)
             {
-                var devices = await apiClient.GetDevicesAsync(user, cancellationToken).ConfigureAwait(false);
+                GetDevicesResult? devices = await apiClient.GetDevicesAsync(user, cancellationToken).ConfigureAwait(false);
                 if (devices == null)
                 {
                     continue;
                 }
 
-                foreach (var device in devices.Results)
+                foreach (string? device in devices.Results)
                 {
-                    var locationsResult = await apiClient.GetLocationsAsync(user, device, DateTimeOffset.UtcNow.AddYears(-42), cancellationToken: cancellationToken).ConfigureAwait(false);
+                    GetLocationsResult? locationsResult = await apiClient.GetLocationsAsync(user, device, DateTimeOffset.UtcNow.AddYears(-42), cancellationToken: cancellationToken).ConfigureAwait(false);
                     if (locationsResult == null)
                     {
                         continue;
                     }
 
-                    var convertedLocationResults = locationsResult.Data.Select(l => LocationConverter.Convert(user, device, l));
+                    IEnumerable<ML.Location>? convertedLocationResults = locationsResult.Data.Select(l => LocationConverter.Convert(user, device, l));
                     result.AddRange(convertedLocationResults);
                 }
             }

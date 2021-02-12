@@ -1,35 +1,36 @@
-﻿namespace WillIBeHome.Owntracks
-{
-    using System;
-    using System.Globalization;
-    using System.Net.Http;
-    using System.Text;
-    using System.Text.Json;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
+namespace WillIBeHome.Owntracks
+{
     public class OwntracksApiClient : IOwntracksApiClient
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
-        public OwntracksApiClient(HttpClient httpClient) => this.httpClient = httpClient;
+        public OwntracksApiClient(HttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<GetUsersResult?> GetUsersAsync(CancellationToken cancellationToken = default)
         {
             const string uri = "api/0/list";
-            using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage? response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            using Stream? stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetUsersResult?>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<GetDevicesResult?> GetDevicesAsync(string user, CancellationToken cancellationToken = default)
         {
-            var uri = $"api/0/list?user={HttpUtility.UrlEncode(user)}";
-            using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+            string? uri = $"api/0/list?user={HttpUtility.UrlEncode(user)}";
+            using HttpResponseMessage? response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            using Stream? stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetDevicesResult?>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
@@ -46,10 +47,10 @@
                 uriBuilder = uriBuilder.Append("&to=").Append(HttpUtility.UrlEncode(to.Value.ToString("o", CultureInfo.InvariantCulture)));
             }
 
-            var uri = uriBuilder.ToString();
-            using var response = await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+            string? uri = uriBuilder.ToString();
+            using HttpResponseMessage? response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            using Stream? stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return await JsonSerializer.DeserializeAsync<GetLocationsResult?>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }

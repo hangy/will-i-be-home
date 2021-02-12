@@ -1,46 +1,36 @@
-﻿namespace WillIBeHome.ML
-{
-    using System;
+﻿using System;
 
+namespace WillIBeHome.ML
+{
     public class Transition
     {
-        private readonly Location from;
+        private readonly Location _from;
 
-        private readonly Location to;
+        private readonly Location _to;
 
         public Transition(Location from, Location to, bool willBeHome)
         {
-            if (from == null)
-            {
-                throw new ArgumentNullException(nameof(from));
-            }
+            _from = from ?? throw new ArgumentNullException(nameof(from));
+            _to = to ?? throw new ArgumentNullException(nameof(to));
 
-            if (to == null)
-            {
-                throw new ArgumentNullException(nameof(to));
-            }
-
-            this.from = from;
-            this.to = to;
-
-            this.Label = willBeHome;
+            Label = willBeHome;
         }
 
-        public string User => from.User;
+        public string User => _from.User;
 
-        public string Device => from.Device;
+        public string Device => _from.Device;
 
-        public string FromGeohash => from.Geohash;
+        public string FromGeohash => _from.Geohash;
 
-        public int FromDayOfWeek => (int)from.Date.DayOfWeek;
+        public int FromDayOfWeek => (int)_from.Date.DayOfWeek;
 
-        public int FromHours => from.Date.Hour;
+        public int FromHours => _from.Date.Hour;
 
-        public string ToGeohash => to.Geohash;
+        public string ToGeohash => _to.Geohash;
 
-        public int ToDayOfWeek => (int)to.Date.DayOfWeek;
+        public int ToDayOfWeek => (int)_to.Date.DayOfWeek;
 
-        public int ToHours => to.Date.Hour;
+        public int ToHours => _to.Date.Hour;
 
         public bool Label { get; }
     }

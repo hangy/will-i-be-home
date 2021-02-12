@@ -1,8 +1,8 @@
-﻿namespace WillIBeHome.ML
-{
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
+namespace WillIBeHome.ML
+{
     public static class LocationsToTransitionsConverter
     {
         public static IEnumerable<Transition> Convert(IEnumerable<Location> locations)
@@ -26,13 +26,13 @@
             var result = new List<Transition>(locations.Count * 3);
             const double maxMinutesBeforeArrivalAtHome = 5.0;
             var sequence = new List<Location>();
-            for (var i = 0; i < locations.Count; ++i)
+            for (int i = 0; i < locations.Count; ++i)
             {
-                var location = locations[i];
+                Location? location = locations[i];
                 if (location.IsHome)
                 {
-                    var sequenceItemsInRange = sequence.Where(l => (location.Date - l.Date).TotalMinutes <= maxMinutesBeforeArrivalAtHome);
-                    var sequenceItemsOutOfRange = sequence.Except(sequenceItemsInRange);
+                    IEnumerable<Location>? sequenceItemsInRange = sequence.Where(l => (location.Date - l.Date).TotalMinutes <= maxMinutesBeforeArrivalAtHome);
+                    IEnumerable<Location>? sequenceItemsOutOfRange = sequence.Except(sequenceItemsInRange);
                     result.AddRange(ConvertSequenceToTransitions(sequenceItemsOutOfRange));
                     result.AddRange(ConvertSequenceToTransitions(sequenceItemsInRange, location));
                     sequence.Clear();
@@ -53,10 +53,10 @@
         {
             var result = new List<Transition>();
 
-            var willBeHome = homeLocation != null;
+            bool willBeHome = homeLocation != null;
 
             Location? lastLocation = default;
-            foreach (var location in locationSequence)
+            foreach (Location? location in locationSequence)
             {
                 if (lastLocation != null)
                 {

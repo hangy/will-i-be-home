@@ -1,17 +1,17 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.ML;
+using System.Net;
+using System.Net.Http;
+using WillIBeHome.ML;
+using WillIBeHome.Owntracks;
+using WillIBeHome.Shared;
+
 namespace WillIBeHome.Api
 {
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.ML;
-    using System.Net;
-    using System.Net.Http;
-    using WillIBeHome.ML;
-    using WillIBeHome.Owntracks;
-    using WillIBeHome.Shared;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -24,13 +24,13 @@ namespace WillIBeHome.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var owntracksSettings = this.Configuration.GetSection("Owntracks").Get<OwntracksSettings>();
+            OwntracksSettings? owntracksSettings = Configuration.GetSection("Owntracks").Get<OwntracksSettings>();
             services.AddHttpClient<IOwntracksApiClient, OwntracksApiClient>(c =>
             {
                 c.BaseAddress = owntracksSettings.Uri;
             }).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler { Credentials = new NetworkCredential(owntracksSettings.HttpUserName, owntracksSettings.HttpPassword) });
 
-            var mlSettings = this.Configuration.GetSection("ML").Get<MLSettings>();
+            MLSettings? mlSettings = Configuration.GetSection("ML").Get<MLSettings>();
             services.AddPredictionEnginePool<Transition, WillBeHomePrediction>()
                 .FromFile(mlSettings.ModelPath);
 

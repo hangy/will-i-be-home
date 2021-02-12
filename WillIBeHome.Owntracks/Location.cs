@@ -1,8 +1,8 @@
-﻿namespace WillIBeHome.Owntracks
-{
-    using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
+namespace WillIBeHome.Owntracks
+{
     public class Location
     {
         [JsonPropertyName("_type")]
