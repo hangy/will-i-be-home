@@ -19,6 +19,11 @@
     {
         internal static async Task Main(string[] args)
         {
+            if (args is null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
             var configuration = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .AddEnvironmentVariables()
@@ -70,18 +75,35 @@
         private static async Task<IEnumerable<ML.Location>> QueryDataAsync(OwntracksSettings owntracksSettings, CancellationToken cancellationToken = default)
         {
             using var messageHandler = new HttpClientHandler { Credentials = new NetworkCredential(owntracksSettings.HttpUserName, owntracksSettings.HttpPassword) };
-            using var httpClient = new HttpClient(messageHandler);
-            httpClient.BaseAddress = owntracksSettings.Uri;
+            using var httpClient = new HttpClient(messageHandler)
+            {
+                BaseAddress = owntracksSettings.Uri
+            };
 
             var apiClient = new OwntracksApiClient(httpClient);
             var users = await apiClient.GetUsersAsync(cancellationToken).ConfigureAwait(false);
             var result = new List<ML.Location>();
+            if (users == null)
+            {
+                return result;
+            }
+
             foreach (var user in users.Results)
             {
                 var devices = await apiClient.GetDevicesAsync(user, cancellationToken).ConfigureAwait(false);
+                if (devices == null)
+                {
+                    continue;
+                }
+
                 foreach (var device in devices.Results)
                 {
-                    var locationsResult = await apiClient.GetLocationsAsync(user, device, DateTimeOffset.UtcNow.AddYears(-42)).ConfigureAwait(false);
+                    var locationsResult = await apiClient.GetLocationsAsync(user, device, DateTimeOffset.UtcNow.AddYears(-42), cancellationToken: cancellationToken).ConfigureAwait(false);
+                    if (locationsResult == null)
+                    {
+                        continue;
+                    }
+
                     var convertedLocationResults = locationsResult.Data.Select(l => LocationConverter.Convert(user, device, l));
                     result.AddRange(convertedLocationResults);
                 }

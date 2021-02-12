@@ -15,23 +15,25 @@
     [Route("[controller]")]
     public class PredictionController : ControllerBase
     {
-        private readonly ILogger<PredictionController> logger;
-
         private readonly IOwntracksApiClient owntracksApiClient;
 
         private readonly PredictionEnginePool<Transition, WillBeHomePrediction> predictionEnginePool;
 
-        public PredictionController(IOwntracksApiClient owntracksApiClient, PredictionEnginePool<Transition, WillBeHomePrediction> predictionEnginePool, ILogger<PredictionController> logger)
+        public PredictionController(IOwntracksApiClient owntracksApiClient, PredictionEnginePool<Transition, WillBeHomePrediction> predictionEnginePool)
         {
             this.owntracksApiClient = owntracksApiClient ?? throw new ArgumentNullException(nameof(owntracksApiClient));
             this.predictionEnginePool = predictionEnginePool ?? throw new ArgumentNullException(nameof(predictionEnginePool));
-            this.logger = logger;
         }
 
         [HttpGet]
         public async Task<bool> Get(string user, string device, CancellationToken cancellationToken = default)
         {
             var locations = await this.owntracksApiClient.GetLocationsAsync(user, device, DateTimeOffset.UtcNow.AddDays(-1), cancellationToken: cancellationToken).ConfigureAwait(false);
+            if (locations== null)
+            {
+                return false;
+            }
+
             var transitions = LocationsToTransitionsConverter.Convert(locations.Data.Select(l => LocationConverter.Convert(user, device, l)));
             var lastTransition = transitions.LastOrDefault();
             if (lastTransition == null)
