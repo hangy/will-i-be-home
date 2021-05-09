@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:5.0.3-alpine3.13 AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0.5-alpine3.13 AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.202-alpine3.13 AS build
