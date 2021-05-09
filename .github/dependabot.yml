@@ -6,7 +6,12 @@ updates:
           interval: "weekly"
 
     - package-ecosystem: "docker"
-      directory: "/"
+      directory: "/WillIBeHome.Api"
+      schedule:
+          interval: "weekly"
+
+    - package-ecosystem: "docker"
+      directory: "/WillIBeHome.Trainer"
       schedule:
           interval: "weekly"
 
