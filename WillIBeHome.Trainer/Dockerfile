@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/runtime:5.0.7-alpine3.13 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0.301-alpine3.13 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.302-alpine3.13 AS build
 WORKDIR /src
 COPY ["WillIBeHome.Trainer/WillIBeHome.Trainer.csproj", "WillIBeHome.Trainer/"]
 RUN dotnet restore "WillIBeHome.Trainer/WillIBeHome.Trainer.csproj"
