@@ -1,7 +1,6 @@
-﻿namespace WillIBeHome.Shared
+﻿namespace WillIBeHome.Shared;
+
+public class MLSettings
 {
-    public class MLSettings
-    {
-        public string? ModelPath { get; set; }
-    }
+    public string? ModelPath { get; set; }
 }

@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace WillIBeHome.Owntracks
+namespace WillIBeHome.Owntracks;
+
+public class GetLocationsResult
 {
-    public class GetLocationsResult
-    {
-        [JsonPropertyName("count")]
-        public int Count { get; set; }
+    [JsonPropertyName("count")]
+    public int Count { get; set; }
 
-        [JsonPropertyName("data")]
-        public IReadOnlyList<Location> Data { get; set; } = new List<Location>();
-    }
+    [JsonPropertyName("data")]
+    public IReadOnlyList<Location> Data { get; set; } = new List<Location>();
 }

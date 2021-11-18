@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace WillIBeHome.Owntracks
+namespace WillIBeHome.Owntracks;
+
+public class GetDevicesResult
 {
-    public class GetDevicesResult
-    {
-        [JsonPropertyName("results")]
-        public string[] Results { get; set; } = Array.Empty<string>();
-    }
+    [JsonPropertyName("results")]
+    public string[] Results { get; set; } = Array.Empty<string>();
 }

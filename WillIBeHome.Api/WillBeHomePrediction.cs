@@ -1,7 +1,6 @@
-﻿namespace WillIBeHome.Api
+﻿namespace WillIBeHome.Api;
+
+public class WillBeHomePrediction
 {
-    public class WillBeHomePrediction
-    {
-        public bool Label { get; set; }
-    }
+    public bool Label { get; set; }
 }

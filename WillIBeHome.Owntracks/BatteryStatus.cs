@@ -1,10 +1,9 @@
-﻿namespace WillIBeHome.Owntracks
+﻿namespace WillIBeHome.Owntracks;
+
+public enum BatteryStatus
 {
-    public enum BatteryStatus
-    {
-        Unknown,
-        Unplugged,
-        Charging,
-        Full
-    }
+    Unknown,
+    Unplugged,
+    Charging,
+    Full
 }

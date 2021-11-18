@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace WillIBeHome.Shared;
 
-namespace WillIBeHome.Shared
+public class OwntracksSettings
 {
-    public class OwntracksSettings
-    {
-        public Uri? Uri { get; set; }
+    public Uri? Uri { get; set; }
 
-        public string? HttpUserName { get; set; }
+    public string? HttpUserName { get; set; }
 
-        public string? HttpPassword { get; set; }
-    }
+    public string? HttpPassword { get; set; }
 }
