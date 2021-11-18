@@ -38,7 +38,6 @@ app.MapGet("/prediction", async (string user, string device, IOwntracksApiClient
 
     WillBeHomePrediction? predictionResult = predictionEnginePool.Predict(lastTransition);
     return predictionResult.Label;
-})
-.WithName("GetPrediction");
+});
 
 app.Run();
