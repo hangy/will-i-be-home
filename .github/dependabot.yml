@@ -1,21 +1,25 @@
 version: 2
 updates:
-    - package-ecosystem: "github-actions"
-      directory: "/"
-      schedule:
-          interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
 
-    - package-ecosystem: "docker"
-      directory: "/WillIBeHome.Api"
-      schedule:
-          interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/WillIBeHome.Api"
+    schedule:
+      interval: "weekly"
 
-    - package-ecosystem: "docker"
-      directory: "/WillIBeHome.Trainer"
-      schedule:
-          interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/WillIBeHome.Trainer"
+    schedule:
+      interval: "weekly"
 
-    - package-ecosystem: "nuget"
-      directory: "/"
-      schedule:
-          interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      Microsoft:
+        patterns:
+          - "Microsoft.*"
