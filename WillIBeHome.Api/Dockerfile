@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0.101 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.203 AS build
 WORKDIR /src
 COPY ["WillIBeHome.Api/WillIBeHome.Api.csproj", "WillIBeHome.Api/"]
 RUN dotnet restore "WillIBeHome.Api/WillIBeHome.Api.csproj"
